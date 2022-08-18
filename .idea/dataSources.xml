@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="pyshop@localhost" uuid="30ac918e-054f-4847-bf68-d2644b967355">
+    <data-source source="LOCAL" name="pyshop@localhost" uuid="b32b7710-2003-41e3-8068-09cb23b9324c">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

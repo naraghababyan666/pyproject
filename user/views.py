@@ -1,10 +1,13 @@
-from django.shortcuts import render
-
 # Create your views here.
+import datetime
+import json
+import jwt
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from user.serializers import UserSerializer
-from rest_framework.views import APIView
+from .models import User
 
 
 class Register(APIView):
@@ -15,5 +18,28 @@ class Register(APIView):
 
         return Response(serializer.data)
 
-    def get(self, request):
-        return
+
+class Login(APIView):
+    def post(self, request):
+        email = request.data['email']
+        password = request.data['password']
+
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            raise AuthenticationFailed('User not found!')
+
+        if not user.check_password(password):
+            raise AuthenticationFailed('Invalid password!')
+
+        payload = {
+            'id': user.id,
+            'expiration': str(datetime.datetime.utcnow() + datetime.timedelta(minutes=60)),
+            'iat': str(datetime.datetime.utcnow())
+        }
+
+        token = jwt.encode(payload, 'secret', algorithm='HS256')
+
+        return Response({
+            "token": token,
+        })
+
