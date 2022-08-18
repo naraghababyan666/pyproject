@@ -34,7 +34,7 @@ class Login(APIView):
         payload = {
             'id': user.id,
             'expiration': str(datetime.datetime.utcnow() + datetime.timedelta(minutes=60)),
-            'iat': str(datetime.datetime.utcnow())
+            'iat': datetime.datetime.utcnow()
         }
 
         token = jwt.encode(payload, 'secret', algorithm='HS256')
@@ -43,3 +43,10 @@ class Login(APIView):
             "token": token,
         })
 
+class RefreshToken(APIView):
+    def post(self, request):
+        data = jwt.decode(request.data['token'], 'secret', algorithms=['HS256'])
+
+        return Response({
+            'a': data
+        })
