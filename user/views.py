@@ -43,5 +43,5 @@ class RefreshToken(APIView):
     def post(self, request):
         token = refresh_token(request.data['token'])
         return Response({
-            'a': token
+            'token': token
         })
