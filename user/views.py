@@ -1,10 +1,11 @@
 # Create your views here.
-import datetime
+
 import json
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .authentication import *
 
 from user.serializers import UserSerializer
 from .models import User
@@ -31,22 +32,16 @@ class Login(APIView):
         if not user.check_password(password):
             raise AuthenticationFailed('Invalid password!')
 
-        payload = {
-            'id': user.id,
-            'expiration': str(datetime.datetime.utcnow() + datetime.timedelta(minutes=60)),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        token = create_token(user.id)
 
         return Response({
-            "token": token,
+            "token": token
         })
+
 
 class RefreshToken(APIView):
     def post(self, request):
-        data = jwt.decode(request.data['token'], 'secret', algorithms=['HS256'])
-
+        token = refresh_token(request.data['token'])
         return Response({
-            'a': data
+            'a': token
         })
